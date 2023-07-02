@@ -7,11 +7,24 @@ if ! command -v nmap &> /dev/null; then
     exit 1
 fi
 
-# Prompt the user for the target IP address or domain name
-read -p "Enter the target IP address or domain name: " target
+# Check if both port and target arguments are provided
+if [ $# -ne 2 ]; then
+    echo "Usage: $0 <target> <port>"
+    exit 1
+fi
+
+# Extract target and port from command-line arguments
+target="$1"
+port="$2"
+
+# Validate port number
+if ! [[ "$port" =~ ^[0-9]+$ ]] || [ "$port" -lt 1 ] || [ "$port" -gt 65535 ]; then
+    echo "Invalid port number. Please enter a number between 1 and 65535."
+    exit 1
+fi
 
 # Run nmap and store the output
-output=$(nmap -p 80 -script dns-brute.nse "$target")
+output=$(nmap -p "$port" -script dns-brute.nse "$target")
 
 # Check if nmap command was successful
 if [ $? -ne 0 ]; then
@@ -50,7 +63,7 @@ if [ -n "$result" ]; then
         # Truncate long IP addresses with auto-ellipsis
         truncated_ip=$ip
         if [ ${#ip} -gt 16 ]; then
-            truncated_ip="${ip:0:13}    <-- Truncated"
+            truncated_ip="${ip:0:13}     <-- Truncated"
         fi
         printf "%-*s %-*s\n" "$max_domain_length" "$domain" "$max_ip_length" "$truncated_ip"
     done <<< "$result"
