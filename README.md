@@ -1,5 +1,5 @@
 # CekBug
-Script untuk mengecek Bug SNI Host menggunakan nmap dns-brute script.
+Script untuk mengecek Bug SNI Host menggunakan NMap dns-brute.
 
 ## Thanks To
 - OpenAI (ChatGPT-3.5-turbo)
